@@ -7,10 +7,10 @@ public class Main
 
     public static void main(String[] args)
     {
-        DifficultyManager.difficulty currentDifficulty = DifficultyManager.askForDifficulty();
 
         if (!SaveManager.hasAnySaves()) {
             Player.playerCreation();
+            DifficultyManager.difficulty currentDifficulty = DifficultyManager.askForDifficulty();
         } else {
             System.out.println("=== START ===");
             System.out.println("1. New Game");
