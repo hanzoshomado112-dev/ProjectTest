@@ -8,9 +8,13 @@ import java.io.FilenameFilter;
 
 
 public class SaveManager {
-
+    
+    
     private static final String SAVE_FOLDER = "saves";
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    
+
+    
 
     static
     {
@@ -21,19 +25,11 @@ public class SaveManager {
         }
     }
 
-    public static boolean hasAnySaves() {
-        File folder = new File("saves");
-
-        FilenameFilter jsonFilter = new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name)
-            {
-                return name.endsWith(".json");
-            }
-        };
-
-        File[] files = folder.listFiles(jsonFilter);
-
+    public static boolean hasAnySaves() 
+    {
+        File folder = new File(SAVE_FOLDER);
+        //folder.isEmpty isn't a thing for some reason so do this instead
+        File[] files = folder.listFiles();
         return files != null && files.length > 0;
     }
 
@@ -45,6 +41,7 @@ public class SaveManager {
 
     public static void saveGame(String slotName) {
 
+        FileWriter writer = null;
         Player player = Player.currentPlayer();
         SaveData data = new SaveData();
 
@@ -71,8 +68,11 @@ public class SaveManager {
         // DIFFICULTY
         data.difficulty = DifficultyManager.getCurrentDifficulty();
 
-        try (FileWriter writer = new FileWriter(getSavePath(slotName)))
+        // Account for errors like no storage, no perms, invalid slotName (which shouldn't happen), etc...
+        // Then, write the actual data onto the file
+        try
         {
+            writer = new FileWriter(getSavePath(slotName));
             gson.toJson(data, writer);
             System.out.println("Game saved to " + getSavePath(slotName));
         }
@@ -80,13 +80,30 @@ public class SaveManager {
         {
             e.printStackTrace();
         }
+        finally
+        {
+            //close writer
+            if (writer != null)
+            {
+                try
+                {
+                writer.close();
+                }
+                catch(Exception e)
+                {
+                   
+                }
+            }
+        }
     }
+
 
     public static void loadGame(String slotName)
     {
-        try (FileReader reader = new FileReader(getSavePath(slotName)))
+         FileReader reader = null;
+        try 
         {
-
+            reader = new FileReader(getSavePath(slotName));
             SaveData data = gson.fromJson(reader, SaveData.class);
 
 
@@ -129,6 +146,21 @@ public class SaveManager {
         catch (Exception e)
         {
             System.out.println("Save file not found: " + slotName);
+        }
+        finally
+        {
+            // close reader
+            if (reader != null)
+            {
+                try
+                {
+                reader.close();
+                }
+                catch(Exception e)
+                {
+    
+                }
+            }
         }
     }
 
