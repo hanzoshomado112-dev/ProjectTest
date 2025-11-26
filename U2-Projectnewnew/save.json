@@ -1,0 +1,25 @@
+{
+  "playerName": "ben",
+  "vigor": 12,
+  "strength": 15,
+  "defense": 10,
+  "intelligence": 6,
+  "currentHealth": 150,
+  "maxHealth": 150,
+  "coins": 1000000,
+  "level": 43,
+  "equippedWeaponName": "Basic Sword",
+  "equippedWeaponDamage": 20,
+  "equippedWeaponCharge": 4,
+  "difficulty": "EASY",
+  "playerClass": "WARRIOR",
+  "inventory": [
+    {
+      "name": "Basic Sword",
+      "damage": 20,
+      "chargeCounter": 4,
+      "healAmount": 0,
+      "type": "WEAPON"
+    }
+  ]
+}
